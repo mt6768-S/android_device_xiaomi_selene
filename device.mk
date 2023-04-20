@@ -385,7 +385,7 @@ PRODUCT_PACKAGES += \
 # Rootdir
 PRODUCT_PACKAGES += \
     fstab.mt6768 \
-    fstab.mt6768_ramdisk \
+    fstab.mt6768.ramdisk \
     init.ago.rc \
     init.connectivity.rc \
     init.modem.rc \
@@ -398,9 +398,6 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PACKAGES += \
     init.recovery.mt6768.rc
-
-PRODUCT_COPY_FILES += \
-    $(DEVICE_PATH)/rootdir/etc/fstab.mt6768:$(TARGET_COPY_OUT_RECOVERY)/root/first_stage_ramdisk/fstab.mt6768
 
 # Sensors
 PRODUCT_PACKAGES += \
