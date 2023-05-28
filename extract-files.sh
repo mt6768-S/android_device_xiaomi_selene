@@ -55,7 +55,10 @@ fi
 
 function blob_fixup {
     case "$1" in
-	vendor/lib*/hw/vendor.mediatek.hardware.pq@2.13-impl.so)
+        lib64/libshowlogo.so)
+            "${PATCHELF}" --add-needed "libshim_showlogo.so" "${2}"
+            ;;
+        vendor/lib*/hw/vendor.mediatek.hardware.pq@2.13-impl.so)
             "${PATCHELF}" --replace-needed "libutils.so" "libutils-v32.so" "${2}"
             ;;
 	vendor/lib*/libmtkcam_stdutils.so)
