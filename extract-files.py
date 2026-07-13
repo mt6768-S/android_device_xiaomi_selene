@@ -49,6 +49,8 @@ blob_fixups: blob_fixups_user_type = {
         .replace_needed('libutils.so', 'libutils-v32.so'),
     'vendor/bin/hw/mtkfusionrild' : blob_fixup()
         .add_needed('libutils-v32.so'),
+    'vendor/lib64/hw/vendor.mediatek.hardware.pq@2.13-impl.so': blob_fixup()
+        .replace_needed('libtinyxml.so', 'libtinyxml-v34.so'),
     'vendor/lib64/libmnl.so' : blob_fixup()
         .add_needed('libcutils.so'),
     ('vendor/bin/mnld', 'vendor/lib64/libaalservice.so', 'vendor/lib64/libcam.utils.sensorprovider.so', 'vendor/lib64/hw/vendor.mediatek.hardware.pq@2.13-impl.so'): blob_fixup()
