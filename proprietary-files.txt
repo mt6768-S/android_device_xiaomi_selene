@@ -1298,8 +1298,6 @@ vendor/thh/ta/isee_model.json
 vendor/firmware/awinic_params.bin
 
 # Wi-Fi
-vendor/bin/wlan_assistant
-vendor/etc/init/wlan_assistant.rc
 vendor/firmware/WIFI_RAM_CODE_soc1_0_1a_1.bin
 vendor/firmware/soc1_0_ram_wifi_1a_1_hdr.bin
 vendor/firmware/wifi.cfg
