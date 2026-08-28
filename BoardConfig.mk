@@ -92,8 +92,9 @@ BOARD_MKBOOTIMG_ARGS += --board ""
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
 TARGET_KERNEL_NO_GCC := true
-TARGET_KERNEL_SOURCE := kernel/xiaomi/selene
-TARGET_KERNEL_CONFIG := selene_defconfig
+TARGET_KERNEL_SOURCE := kernel/xiaomi/mt6768
+TARGET_KERNEL_CONFIG := vendor/mt6768_defconfig
+TARGET_KERNEL_CONFIG += vendor/selene.config
 BOARD_KERNEL_IMAGE_NAME := Image.gz
 
 # NFC
