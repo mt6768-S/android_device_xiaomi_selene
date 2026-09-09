@@ -516,10 +516,6 @@ vendor/bin/libccu_gc02m1_macro_aac_mipi_raw.dm
 vendor/bin/libccu_gc02m1_macro_aac_mipi_raw.pm
 vendor/bin/libccu_gc02m1_macro_sy_mipi_raw.dm
 vendor/bin/libccu_gc02m1_macro_sy_mipi_raw.pm
-vendor/bin/libccu_imx355_aac_ultra_mipi_raw.dm
-vendor/bin/libccu_imx355_aac_ultra_mipi_raw.pm
-vendor/bin/libccu_imx355_sunny_ultra_mipi_raw.dm
-vendor/bin/libccu_imx355_sunny_ultra_mipi_raw.pm
 vendor/bin/libccu_ov02b1b_ofilm_mipi_raw.dm
 vendor/bin/libccu_ov02b1b_ofilm_mipi_raw.pm
 vendor/bin/libccu_ov50c40_ofilm_main_mipi_raw.dm
