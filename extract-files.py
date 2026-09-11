@@ -51,9 +51,12 @@ blob_fixups: blob_fixups_user_type = {
         .add_needed('libutils-v32.so'),
     'vendor/lib64/hw/vendor.mediatek.hardware.pq@2.13-impl.so': blob_fixup()
         .replace_needed('libtinyxml.so', 'libtinyxml-v34.so'),
-    'vendor/lib64/libmnl.so' : blob_fixup()
+    'vendor/lib64/libmnl_mtk.so' : blob_fixup()
         .add_needed('libcutils.so'),
-    ('vendor/bin/mnld', 'vendor/lib64/libaalservice.so', 'vendor/lib64/libcam.utils.sensorprovider.so', 'vendor/lib64/hw/vendor.mediatek.hardware.pq@2.13-impl.so'): blob_fixup()
+    'vendor/bin/mnld' : blob_fixup()
+        .replace_needed('libsensorndkbridge.so', 'android.hardware.sensors@1.0-convert-shared.so')
+        .replace_needed('libmnl.so', 'libmnl_mtk.so'),
+    ('vendor/lib64/libaalservice.so', 'vendor/lib64/libcam.utils.sensorprovider.so', 'vendor/lib64/hw/vendor.mediatek.hardware.pq@2.13-impl.so'): blob_fixup()
         .replace_needed('libsensorndkbridge.so', 'android.hardware.sensors@1.0-convert-shared.so'),
     ('vendor/bin/hw/android.hardware.gnss-service.mediatek', 'vendor/lib64/hw/android.hardware.gnss-impl-mediatek.so'): blob_fixup()
         .replace_needed('android.hardware.gnss-V1-ndk_platform.so', 'android.hardware.gnss-V1-ndk.so'),
