@@ -138,10 +138,6 @@ PRODUCT_PACKAGES += \
     android.hardware.drm@1.4.vendor \
     libprotobuf-cpp-lite-3.9.1-vendorcompat
 
-# Fastbootd
-PRODUCT_PACKAGES += \
-    fastbootd
-
 # Fingerprint
 PRODUCT_PACKAGES += \
     com.fingerprints.extension@1.0.vendor \
