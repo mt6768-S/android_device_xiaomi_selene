@@ -354,6 +354,7 @@ PRODUCT_PACKAGES += \
     SettingsOverlaySelene \
     SystemUIOverlaySelene \
     TetheringConfigOverlaySelene \
+    NcmTetheringOverlay \
     WifiOverlaySelene
 
 # Secure Element
