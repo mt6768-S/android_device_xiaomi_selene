@@ -344,6 +344,7 @@ PRODUCT_PACKAGES += \
     FrameworksResOverlaySelene \
     SettingsOverlaySelene \
     SystemUIOverlaySelene \
+    NcmTetheringOverlay \
     TetheringConfigOverlaySelene \
     WifiOverlaySelene
 
