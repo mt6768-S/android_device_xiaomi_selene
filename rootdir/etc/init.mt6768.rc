@@ -3,14 +3,8 @@
 import /vendor/etc/init/hw/init.connectivity.rc
 import /vendor/etc/init/hw/init.mt6768.usb.rc
 import /vendor/etc/init/hw/init.project.rc
-import /FWUpgradeInit.rc
-import /vendor/etc/init/hw/init.volte.rc
-import /vendor/etc/init/hw/init.mal.rc
 import /vendor/etc/init/hw/init.sensor_1_0.rc
-import /vendor/etc/init/hw/init.ago.rc
 import /vendor/etc/init/hw/init.stnfc.rc
-import /system/etc/init/hw/init.stnfc.rc
-import init.mishow.ctl.rc
 
 # init.modem.rc must be the LAST rc file because vold.post_fs_data_done is set in it
 import /vendor/etc/init/hw/init.modem.rc
@@ -21,13 +15,18 @@ on early-init
     # boot perf. tune
     write /proc/perfmgr/boost_ctrl/cpu_ctrl/boot_freq "0 0 0 0"
     write /sys/devices/platform/10012000.dvfsrc/helio-dvfsrc/dvfsrc_req_ddr_opp 0
-    chmod 0666 /sys/module/usb20_host/parameters/vbus_force_on
+    mount debugfs debugfs /sys/kernel/debug
+    chmod 0755 /sys/kernel/debug
 
 on init
     write /proc/bootprof "INIT:init"
+    # Support legacy paths
+    symlink /sdcard /mnt/sdcard
 
     # if primary storage is physical, set ro.vold.primary_physical to 1
     # setprop ro.vold.primary_physical 1
+
+    mkdir /mnt/cd-rom 0000 system system
 
 # change lk_env permission
     chown root system /proc/lk_env
@@ -37,16 +36,11 @@ on init
     write /proc/sys/net/core/wmem_max 8388608
     write /proc/sys/net/core/rmem_max 8388608
 
-#HQ-zhangpeng modify for J19 20.08.14 start
-#set tcp_mtu_probing values to 1
-    write /proc/sys/net/ipv4/tcp_mtu_probing 1
-#HQ-zhangpeng modify for J19 20.08.14 end
-
 # update cpus for cpuset cgroup
     write /dev/cpuset/foreground/cpus 0-7
     write /dev/cpuset/foreground/boost/cpus 0-7
     write /dev/cpuset/background/cpus 0-3
-    write /dev/cpuset/system-background/cpus 0-3
+    write /dev/cpuset/system-background/cpus 0-5
     write /dev/cpuset/top-app/cpus 0-7
 
 on late-init
@@ -60,8 +54,11 @@ on charger
     write /proc/perfmgr/boost_ctrl/cpu_ctrl/boot_freq "-1 -1 -1 -1"
     write /sys/devices/platform/10012000.dvfsrc/helio-dvfsrc/dvfsrc_req_ddr_opp -1
 
+    exec /system/bin/e2fsck -f -p /dev/block/platform/bootdevice/by-name/cache
+    mount ext4 /dev/block/platform/bootdevice/by-name/cache /cache rw wait
     chmod 0660 /dev/spm
     chown system system /dev/spm
+    start spm_script
     chmod 0666 /dev/kmsg
     chmod 0775 /mnt/vendor
     mkdir /mnt/vendor/nvcfg
@@ -87,20 +84,19 @@ on charger
     start fuelgauged
     start fuelgauged_nvram
 
-    chown system system /sys/class/huaqin/interface/hw_info/lcm
-    chmod 0660 /sys/class/huaqin/interface/hw_info/lcm
+    chown system system /sys/class/leds/lcd-backlight/brightness
+    chown system system /sys/class/leds/red/brightness
+    chown system system /sys/class/leds/green/brightness
     chown system system /proc/nvt_pocket_palm_switch
     chmod 0660 /proc/nvt_pocket_palm_switch
-    chown system system /proc/nvt_edge_reject_switch
-    chmod 0660 /proc/nvt_edge_reject_switch
-    chown system system /sys/devices/platform/1100a000.spi0/spi_master/spi0/spi0.0/fts_rw_reg
-    chmod 0660 /sys/devices/platform/1100a000.spi0/spi_master/spi0/spi0.0/fts_rw_reg
 
+	#K19S code for HQ-169086 add by qianxiaoming at 2021.11.19 start
+	chown system system /sys/devices/platform/1100a000.spi0/spi_master/spi0/spi0.1/fts_edge_mode
+	chmod 0660 /sys/devices/platform/1100a000.spi0/spi_master/spi0/spi0.1/fts_edge_mode
+	#K19S code for HQ-169086 add by qianxiaoming at 2021.11.19 end
+
+    start vendor.light-default
     start mi_thermald
-
-    # Turn backlight on and switch to backlight trigger
-    write /sys/class/leds/lcd-backlight/brightness "1000"
-    write /sys/class/leds/lcd-backlight/trigger "backlight"
 
     # Stop bootprof
     write /proc/bootprof "0"
@@ -108,13 +104,19 @@ on charger
 on property:sys.boot_completed=1
     write /proc/pl_lk "0"
 
+
+
+on property:sys.boot_completed=1 && property:ro.build.product=selene_in
+    write /sys/devices/platform/pinctrl/mt_gpio  "set 50 3001001111"
+    write /sys/devices/platform/pinctrl/mt_gpio  "set 51 3001001111"
+
+
 on early-fs
     write /proc/bootprof "INIT:early-fs"
-    start vold
 
 on fs
     write /proc/bootprof "INIT:fs"
-    start vendor.boot-hal-1-1
+    start vendor.boot-hal-1-2
 
     # mount fstab
     write /proc/bootprof "INIT:Mount_START"
@@ -127,7 +129,14 @@ on fs
     write /proc/sys/vm/page-cluster 0
     write /proc/sys/vm/swappiness 100
     write /sys/kernel/mm/swap/vma_ra_enabled false
-    swapon_all /vendor/etc/fstab.mt6768
+    # swapon_all /vendor/fstab.enableswap
+
+    mount iso9660 loop@/vendor/etc/iAmCdRom.iso /mnt/cd-rom ro
+
+    #K19S-T code for HQ-268232 by gaoshilin at 20221215 start
+    mount ext4 /dev/block/by-name/rescue /mnt/rescue noatime
+    restorecon_recursive /mnt/rescue
+    #K19S-T code for HQ-268232 by gaoshilin at 20221215 end
 
 on post-fs
     write /proc/bootprof "INIT:post-fs"
@@ -138,6 +147,9 @@ on post-fs
     write /proc/perfmgr/boost_ctrl/eas_ctrl/boot_boost "2 100"
     write /proc/perfmgr/boost_ctrl/eas_ctrl/boot_boost "3 100"
     write /proc/perfmgr/boost_ctrl/eas_ctrl/sched_stune_task_thresh 0
+
+    # Support legacy paths
+    symlink /sdcard /storage/sdcard0
 
     #change permissions for mediaserver
     chown root media /proc/clkmgr/mipi_test
@@ -165,44 +177,32 @@ on post-fs
 
     chown system system /mnt/vendor/protect_s
     chmod 0770 /mnt/vendor/protect_s
-    
-    
-#tp ito
+
+    #K19A code for HQ-131147 by lizheng at 20210423 start
+    # Support A/B feature for EMMC and UFS boot region
+        symlink /dev/block/sda /dev/block/mmcblk0boot0
+        symlink /dev/block/sdb /dev/block/mmcblk0boot1
+        symlink /dev/block/mmcblk0boot0 /dev/block/platform/bootdevice/by-name/preloader_a
+        symlink /dev/block/mmcblk0boot1 /dev/block/platform/bootdevice/by-name/preloader_b
+    #K19A code for HQ-131147 by lizheng at 20210423 end
+
+    # allow ccci_mdinit access ccci_dump
+    chown root system /proc/ccci_dump
+
+	#tp ito
     chown system system /proc/tp_selftest
     chmod 0664 /proc/tp_selftest
     
-    
-
-#K19A code for HQ-131147 by lizheng at 20210423 start
-# Support A/B feature for EMMC and UFS boot region
-    symlink /dev/block/sda /dev/block/mmcblk0boot0
-    symlink /dev/block/sdb /dev/block/mmcblk0boot1
-    symlink /dev/block/mmcblk0boot0 /dev/block/platform/bootdevice/by-name/preloader_a
-    symlink /dev/block/mmcblk0boot1 /dev/block/platform/bootdevice/by-name/preloader_b
-#K19A code for HQ-131147 by lizheng at 20210423 end
-
-#tp ito
-    chown system system /proc/tp_selftest
-    chmod 0664 /proc/tp_selftest
-
-# Charger
-service vendor.charger /system/bin/charger
-    class charger
-    user system
-    group system graphics wakelock input
-    capabilities SYS_BOOT
-    file /dev/kmsg w
-    file /sys/fs/pstore/console-ramoops-0 r
-    file /sys/fs/pstore/console-ramoops r
-    file /proc/last_kmsg r
-
 on late-fs
     write /proc/bootprof "INIT:late-fs"
     wait_for_prop hwservicemanager.ready "true"
-    exec_start wait_for_keymaster
     setprop init.userspace_reboot.userdata_remount.timeoutmillis 10000
+    write /proc/bootprof "INIT:Mount_START --late"
+    write /sys/kernel/tracing/trace_marker "B|1|Mount late"
     mount_all /vendor/etc/fstab.mt6768 --late
     exec /system/bin/tune2fs -O has_journal -u 10010 -r 4096 /dev/block/platform/bootdevice/by-name/userdata
+    write /sys/kernel/tracing/trace_marker "E"
+    write /proc/bootprof "INIT:Mount_END --late"
 
 on post-fs-data
     write /proc/bootprof "INIT:post-fs-data"
@@ -338,10 +338,6 @@ on post-fs-data
 
     chmod 0666 /dev/pmem_multimedia
 
-    # DT2W
-    chown system system /sys/touchpanel/double_tap
-    chmod 0644 /sys/touchpanel/double_tap
-
     # set ptmx group to non-root
     chown root radio /dev/ptmx
 
@@ -357,11 +353,11 @@ on post-fs-data
     setrlimit 8 -1 -1
 
     # CMDQ
-    chmod 0644 /dev/mtk_cmdq
+    chmod 0640 /dev/mtk_cmdq
     chown system system /dev/mtk_cmdq
 
     # MDP SYNC
-    chmod 0644 /dev/mdp_sync
+    chmod 0640 /dev/mdp_sync
     chown system system /dev/mdp_sync
 
     #OFFLOAD SERVICE
@@ -398,11 +394,11 @@ on post-fs-data
     #VideoCodec
     chmod 0660 /dev/vcu
     chown media system /dev/vcu
-    chmod 0666 /dev/video0
-    chown mediacodec system /dev/video0
-    chmod 0666 /dev/video1
-    chown mediacodec system /dev/video1
-    mkdir /data/vendor/vcodec 0770 media system
+    chmod 0660 /dev/video0
+    chown media system /dev/video0
+    chmod 0660 /dev/video1
+    chown media system /dev/video1
+    mkdir /data/vendor/vcodec 0777 media system
     mkdir /data/vendor/vcodec/log 0770 media system
     mkdir /data/vendor/vcodec/in 0770 media system
     mkdir /data/vendor/vcodec/out 0770 media system
@@ -558,6 +554,8 @@ on post-fs-data
 
     #ITO
     chmod 0777 /data/local/tmp
+    
+    chmod 0777 /sys/devices/platform/simtray/status
 
     #Charge
     chmod 0777 /sys/class/power_supply/usb/reverse_chg_otg
@@ -721,6 +719,10 @@ on post-fs-data
 
 	mkdir /data/vendor/charge_logger 0771 system system
 
+    #K19S code for K19SFAC-9 by guquanding at 2021.8.16
+    chmod 0664 /data/vendor/charge_logger/charge_logger_a.csv
+
+
 # End of adding by MTK drivers
 # -----------------------
 
@@ -729,17 +731,15 @@ on zygote-start
 
 on early-boot
     write /proc/bootprof "INIT:early-boot"
+    verity_update_state
 
 on boot
     write /proc/bootprof "INIT:boot"
 
-    setprop debug.sf.vsync_reactor 0
-
     write /proc/sys/vm/dirty_writeback_centisecs 300
     chmod 0660 /sys/power/autosleep
 
-    #K19S code for K19SFAC-9 by guquanding at 2021.8.16
-    chmod 0664 /data/vendor/charge_logger/charge_logger_a.csv
+	chmod 0664 /data/vendor/charge_logger/charge_logger_a.csv
 
     chmod 0666 /sys/class/leds/lcd-backlight/brightness
     chown system system /sys/class/leds/lcd-backlight/brightness
@@ -758,12 +758,11 @@ on boot
 
     chmod 0777 /sys/devices/platform/flashlights_led191/leds
     chown system system /sys/devices/platform/flashlights_led191/leds 
-    
-    chmod 0664 /sys/devices/platform/bootdevice/mmc_host/mmc0/mmc0:0001/serial
-    chown system system /sys/devices/platform/bootdevice/mmc_host/mmc0/mmc0:0001/serial   
-    
-    chmod  0777 /dev/nq-nci
-
+	
+	chmod 0664 /sys/devices/platform/bootdevice/mmc_host/mmc0/mmc0:0001/serial
+	chown system system /sys/devices/platform/bootdevice/mmc_host/mmc0/mmc0:0001/serial
+	
+	
     chown system system /sys/devices/system/cpu/cpufreq/hotplug/cpu_num_base
     chmod 0660 /sys/devices/system/cpu/cpufreq/hotplug/cpu_num_base
     chown system system /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
@@ -789,7 +788,7 @@ on boot
     chown system system /sys/class/leds/red/trigger
     chown system system /sys/class/leds/green/trigger
     chown system system /sys/class/leds/blue/trigger
-
+    
     chown system system /sys/devices/platform/11012000.spi2/spi_master/spi2/spi2.0/authen_fd/performance
     chmod 0664 /sys/devices/platform/11012000.spi2/spi_master/spi2/spi2.0/authen_fd/performance
 
@@ -798,6 +797,11 @@ on boot
     chown radio system /sys/power/tuxonice/do_hibernate
     chmod 0770 /sys/power/tuxonice
     chmod 0220 /sys/power/tuxonice/do_hibernate
+
+    # K19A-T code for HQ-269282 by tanrong at 2023/1/12 begin
+    chown system /sys/devices/platform/1100a000.spi0/spi_master/spi0/spi0.1/fts_earphone_mode
+    chmod 0666 /sys/devices/platform/1100a000.spi0/spi_master/spi0/spi0.1/fts_earphone_mode
+    # K19A-T code for HQ-269282 by tanrong at 2023/1/12 end
 
     chown root root /sys/class/huaqin/interface/hw_info/lcm
     chmod 0666 /sys/class/huaqin/interface/hw_info/lcm
@@ -962,12 +966,8 @@ on boot
 
     chown system system /sys/class/thermal/thermal_message/sconfig
 
-    # DT2W
-    chown system system /sys/touchpanel/double_tap
-    chmod 0660 /sys/touchpanel/double_tap
-
 # add charge_logger service for dump charge message
-service charge_logger /vendor/bin/charge_logger
+service charge_logger /system/vendor/bin/charge_logger
 	class last_start
 	user system
 	group system system wakelock
@@ -980,23 +980,56 @@ on property:sys.boot_completed=1
 #Power Manager
     write /sys/power/pm_freeze_timeout 2000
 
+on property:vold.decrypt=trigger_reset_main
+    write /proc/bootprof "INIT:vold.decrypt=trigger_reset_main"
+    setprop sys.boot_completed 0
+    setprop dev.bootcomplete 0
+
+#Code for HQ-268431 add by wanghaojie at 2023.2.6 start
 #Code for HQ-100539 add by wangzhengyuan at 20201112 start
 #WiFi
 on property:vendor.sysctl.tx=3
-    exec - root -- /system/bin/iwpriv wlan0 driver "SET_PWR_CTRL MySar 3"
+    exec - root -- /vendor/bin/iwpriv wlan0 driver "SET_PWR_CTRL MySar 3"
 
 #WiFi
 on property:vendor.sysctl.tx=2
-    exec - root -- /system/bin/iwpriv wlan0 driver "SET_PWR_CTRL MySar 2"
+    exec - root -- /vendor/bin/iwpriv wlan0 driver "SET_PWR_CTRL MySar 2"
 
 #WiFi
 on property:vendor.sysctl.tx=1
-    exec - root -- /system/bin/iwpriv wlan0 driver "SET_PWR_CTRL MySar 1"
+    exec - root -- /vendor/bin/iwpriv wlan0 driver "SET_PWR_CTRL MySar 1"
 
 #WiFi
 on property:vendor.sysctl.tx=0
-    exec - root -- /system/bin/iwpriv wlan0 driver "SET_PWR_CTRL MySar 0"
+    exec - root -- /vendor/bin/iwpriv wlan0 driver "SET_PWR_CTRL MySar 0"
 #Code for HQ-100539 add by wangzhengyuan at 20201112 end
+#Code for HQ-268431 add by wanghaojie at 2023.2.6 end
+
+on property:vold.decrypt=trigger_post_fs_data
+    write /proc/bootprof "INIT:vold.decrypt=trigger_post_fs_data"
+
+on property:vold.decrypt=trigger_restart_min_framework
+    write /proc/bootprof "INIT:vold.decrypt=trigger_restart_min_framework"
+    start nvram_daemon
+    start msensord
+
+on property:vold.decrypt=trigger_restart_framework
+    write /proc/bootprof "INIT:vold.decrypt=trigger_restart_framework"
+    start nvram_daemon
+    start msensord
+
+on property:vold.decrypt=trigger_shutdown_framework
+    write /proc/bootprof "INIT:vold.decrypt=trigger_shutdown_framework"
+    setprop sys.boot_completed 0
+    setprop dev.bootcomplete 0
+
+# bugreport is triggered by holding down volume down, volume up and power
+service bugreport /system/bin/dumpstate -d -p -B -z \
+        -o /data/user_de/0/com.android.shell/files/bugreports/bugreport
+    class late_start
+    disabled
+    oneshot
+    keycodes 114 115 116
 
 # end boot time fs tune
 on property:sys.boot_completed=1
@@ -1012,11 +1045,15 @@ on property:sys.boot_completed=1
     write /sys/block/dm-3/queue/read_ahead_kb 128
     write /sys/block/dm-4/queue/read_ahead_kb 128
     write /sys/block/dm-5/queue/read_ahead_kb 128
+    write /proc/sys/vm/swappiness 100
+    write /dev/memcg/memory.swappiness 100
+    write /dev/memcg/apps/memory.swappiness 100
+    write /dev/memcg/system/memory.swappiness 100
 
 # start EAS+
 on property:sys.boot_completed=1
 
-    write /sys/devices/system/cpu/eas/enable 1
+    write /sys/devices/system/cpu/eas/enable 2
     write /proc/cpufreq/cpufreq_sched_disable 0
     chown system system /dev/stune/foreground/schedtune.prefer_idle
     chown system system /dev/stune/top-app/schedtune.prefer_idle
@@ -1024,8 +1061,8 @@ on property:sys.boot_completed=1
     write /dev/stune/foreground/schedtune.prefer_idle 0
     write /dev/stune/top-app/schedtune.prefer_idle 0
     write /dev/stune/rt/schedtune.prefer_idle 0
-    write /dev/stune/top-app/schedtune.boost 1
     write /proc/sys/kernel/sched_migration_cost_ns 200000
+    write /proc/sys/net/ipv4/tcp_mtu_probing 1
 
     # restore perf. parameters
     write /proc/perfmgr/boost_ctrl/eas_ctrl/boot_boost "0 0"
@@ -1041,10 +1078,6 @@ on property:sys.boot_completed=1
     write /sys/devices/system/cpu/cpufreq/policy4/scaling_governor "schedplus"
     # Stop bootprof
     write /proc/bootprof "0"
-
-# initialize powerHAL when boot is completed
-on property:sys.boot_completed=1
-    setprop vendor.mediatek.powerhal.init 1
 
 #service dpfd /vendor/bin/dpfd
 #	user root
@@ -1097,21 +1130,73 @@ on property:persist.vendor.mediatek.fg.log.enable=1
     write /sys/devices/platform/battery_meter/FG_daemon_log_level 7
     write /sys/bus/platform/devices/battery/FG_daemon_log_level 7
     write /proc/sys/kernel/printk 8
-
-
+# K19A-T code for HQ-269276 by miaozhichao at 2022/12/19 start
+service charger /system/bin/charger
+    class charger
+    critical
+    #seclabel u:r:charger:s0
+    group system graphics
+    seclabel u:r:healthd:s0
+# K19A-T code for HQ-269276 by miaozhichao at 2022/12/19 end
 # add meta_tst for ATM
 service meta_tst /vendor/bin/meta_tst
-    class main
-    user system
+    class core
+    user root
     group radio gps system wifi audio bluetooth media
     capabilities NET_RAW NET_ADMIN
+    socket meta-atci stream 660 radio system
     disabled
     oneshot
 
-#K19A code for K19A-58 by lizheng at 2021.4.2 start
+service factory_no_image /vendor/bin/factory
+    user root
+    group radio system wifi media gps audio bluetooth wakelock nfc
+    capabilities BLOCK_SUSPEND NET_RAW NET_ADMIN SYS_ADMIN SYS_BOOT
+    socket factory-atci stream 660 radio system
+    disabled
+    oneshot
+	
+# start meta_tst for ATM
 on property:sys.boot_completed=1 && property:ro.boot.atm=enable
     start meta_tst
-#K19A code for K19A-58 by lizheng at 2021.4.2 end
+
+# reset mdmode when modem crash happens in ATM
+on property:vendor.mtk.md1.status=reset
+    setprop persist.vendor.atm.mdmode normal
+
+#K19A code for HQ-121852 by qianxiaoming at 2021623
+# reboot request when operator change
+on property:sys.boot_completed="" && property:persist.radio.op.name=AT && property:persist.vendor.op.name.last=UN
+   setprop persist.vendor.op.name.last "AT"
+   setprop sys.powerctl "reboot"
+
+on property:sys.boot_completed="" && property:persist.radio.op.name=UN && property:persist.vendor.op.name.last=AT
+   setprop persist.vendor.op.name.last "UN"
+   setprop sys.powerctl "reboot"
+
+on property:sys.boot_completed="" && property:persist.radio.op.name=UN && property:persist.vendor.op.name.last=""
+   setprop persist.vendor.op.name.last "UN"
+   setprop sys.powerctl "reboot"
+
+on property:sys.boot_completed=1 && property:persist.radio.op.name=*
+   setprop persist.vendor.op.name.last ${persist.radio.op.name}
+
+
+# FPSGO FBT Game
+on boot
+    insmod /vendor/lib/modules/fpsgo.ko
+
+# add this link for cust mount
+on init
+    symlink /dev/block/platform/bootdevice /dev/block/bootdevice
+
+# VSIM service (vendor OSI)
+service osi /system/bin/osi
+    class main
+    user root
+    disabled
+    oneshot
+    #seclabel u:r:osi:s0
 
 service initprop_bin /system/vendor/bin/initprop_bin
     class main
@@ -1164,11 +1249,6 @@ service closead /system/vendor/bin/displayf_bin s 0
 on property:sys.hq.ad=0
     start closead
 
-# add PcbaConfigSet
-service PcbaConfigSet /system/vendor/bin/PcbaConfigSet
-    class core
-    oneshot
-
 service screenmode0 /system/vendor/bin/factory_bin s 0
     class main
     user root
@@ -1211,55 +1291,6 @@ service disablefreqhop /system/vendor/bin/factory_bin c 0
     oneshot
     disabled
 
-on init
-    symlink /dev/block/platform/bootdevice /dev/block/bootdevice
-
-service enableswtp /system/vendor/bin/factory_bin z 1
-    class main
-    user root
-    oneshot
-    disabled
-
-service disableswtp /system/vendor/bin/factory_bin z 0
-    class main
-    user root
-    oneshot
-    disabled
-
-service gaogpio /system/vendor/bin/factory_bin y 1
-    class main
-    user root
-    oneshot
-    disabled
-
-service digpio /system/vendor/bin/factory_bin y 0
-    class main
-    user root
-    oneshot
-    disabled
-
-#K19A code for HQ-121852 by qianxiaoming at 2021623
-# reboot request when operator change
-on property:sys.boot_completed="" && property:persist.radio.op.name=AT && property:persist.vendor.op.name.last=UN
-   setprop persist.vendor.op.name.last "AT"
-   setprop sys.powerctl "reboot"
-
-on property:sys.boot_completed="" && property:persist.radio.op.name=UN && property:persist.vendor.op.name.last=AT
-   setprop persist.vendor.op.name.last "UN"
-   setprop sys.powerctl "reboot"
-
-on property:sys.boot_completed="" && property:persist.radio.op.name=UN && property:persist.vendor.op.name.last=""
-   setprop persist.vendor.op.name.last "UN"
-   setprop sys.powerctl "reboot"
-
-on property:sys.boot_completed=1 && property:persist.radio.op.name=*
-   setprop persist.vendor.op.name.last ${persist.radio.op.name}
-
-
-# FPSGO FBT Game
-on boot
-    insmod /vendor/lib/modules/fpsgo.ko
-
 service maxcurrentNocall /system/vendor/bin/factory_bin m 0
     class main
     user root
@@ -1272,10 +1303,73 @@ service maxcurrentIncall /system/vendor/bin/factory_bin m 1
     oneshot
     disabled
 
-service mi_thermald /vendor/bin/mi_thermald
+service mi_thermald /system/vendor/bin/mi_thermald
     class main
     user root
     group system
-
+    seclabel u:r:mi_thermald:s0
 on property:odm.audio.typec.status=*
     setprop vendor.audio.typec.status ${odm.audio.typec.status}
+
+
+on property:ro.product.marketname="Redmi 10"
+    setprop ro.lmk.use_minfree_levels "true"
+    restart lmkd
+
+# C3T code for HQ-218751 by gaopeng at 2022/08/23 start
+service displayfeature /system/bin/displayfeature
+     class late_start
+     user root
+     group root
+on property:init.svc.surfaceflinger=stopped
+     stop displayfeature
+on property:init.svc.surfaceflinger=running
+     start displayfeature
+on property:init.svc.surfaceflinger=restarting
+     stop displayfeature
+# C3T code for HQ-218751 by gaopeng at 2022/08/23 end
+
+# K19A-T code for HQ-269282 by tanrong at 2023/1/12 begin
+service headset_in_screenmode /system/vendor/bin/factory_bin q 1
+    class main
+    user root
+    oneshot
+    disabled
+
+service headset_out_screenmode /system/vendor/bin/factory_bin q 0
+    class main
+    user root
+    oneshot
+    disabled
+
+# headset mode
+on property:persist.audio.headset.plug.status=on
+   start headset_in_screenmode
+
+on property:persist.audio.headset.plug.status=off
+   start headset_out_screenmode
+# K19A-T code for HQ-269282 by tanrong at 2023/1/12 end
+
+#K19A-T code for HQ-269263 by tanrong at 20230130 start
+service mishow_start /vendor/bin/sh /vendor/bin/mishow.sh 1
+       class main
+       user system
+       group system
+       disabled
+       oneshot
+       seclabel u:r:mishow:s0
+service mishow_stop /vendor/bin/sh /vendor/bin/mishow.sh 0
+       class main
+       user system
+       group system
+       disabled
+       oneshot
+       seclabel u:r:mishow:s0
+on property:vendor.charge.mishow.ctl=true
+       start mishow_start
+on property:vendor.charge.mishow.ctl=false
+       start mishow_stop
+on property:persist.vendor.battery.mishow=true
+       setprop vendor.charge.mishow.ctl true
+##K19A-T code for HQ-269263 by tanrong at 20230130 end
+

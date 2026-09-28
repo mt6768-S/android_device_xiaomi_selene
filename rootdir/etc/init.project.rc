@@ -1,6 +1,10 @@
 # MTK project .rc configure
-import /vendor/odm/etc/${ro.boot.product.hardware.sku}/vendor.nxp.hardware.nfc@1.2-service_selene.rc
-import /vendor/odm/etc/${ro.boot.product.hardware.sku}/android.hardware.secure_element@1.2-service-mediatek.rc
+
+# K19A-T code for HQ-274009 by zhangqiutong at 2022.12.17 start
+import /vendor/odm/etc/init/${ro.boot.product.hardware.sku}/android.hardware.nfc@1.2-service.rc
+import /vendor/odm/etc/init/${ro.boot.product.hardware.sku}/android.hardware.secure_element@1.2-service-mediatek.rc
+# K19A-T code for HQ-274009 by zhangqiutong at 2022.12.17 end
+
 on init
     mkdir /mnt/media_rw/usbotg 0700 media_rw media_rw
     mkdir /storage/usbotg 0700 root root
@@ -39,6 +43,12 @@ on post-fs-data
 
     chmod 0660 /dev/spm
     chown system system /dev/spm
+
+#K19A/S-T code for HQ-277199 by wangshizhen at 2023/01/06 start
+#touch
+    chown system system /sys/class/touch/touch_dev/palm_sensor
+#K19A/S-T code for HQ-277199 by wangshizhen at 2023/01/06 end
+
 #dual calib
     chmod 0777 /mnt/vendor/persist/camera/rear_dc_cal_wd.bin
     chmod 0777 /mnt/vendor/persist/camera/rear_dc_cal_wu.bin
@@ -51,10 +61,6 @@ on post-fs-data
 #XIAOMI_AI_ASD
     mkdir /data/misc/camera 0777 system camera
     mkdir /data/vendor/camera 0777 system camera
-    chmod 0660 /dev/nq-nci
-    chown nfc nfc /dev/nq-nci
-    chmod 0660 /dev/p73
-    chown nfc nfc /dev/p73
 
 # for intsense_k19a bokeh use
     chown system system /data/vendor/camera/com.xiaomi.dcal.wd.data
@@ -102,31 +108,7 @@ on post-fs-data
     chmod 0444  /sys/class/sensor/architecture
     chmod 0666  /dev/sar
     #modify sar Authority  by luozeng at 2021.3.30 end
-on init
-    # Refer to http://source.android.com/devices/tech/storage/index.html
-    # It said, "Starting in Android 4.4, multiple external storage devices are surfaced to developers through
-    #           Context.getExternalFilesDirs(), Context.getExternalCacheDirs(), and Context.getObbDirs().
-    #           External storage devices surfaced through these APIs must be a semi-permanent part of the device (such as an SD card slot in a battery compartment).
-    #           Developers expect data stored in these locations to be available over long periods of time."
-    # Therefore, if the target doesn't support sd hot-plugging (Ex: the SD card slot in a battery compartment), we need to export SECONDARY_STORAGE in 'boot' section
-    #
-    # export SECONDARY_STORAGE /storage/sdcard1
 
-service fuse_usbotg /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/usbotg /storage/usbotg
-    class late_start
-    disabled
-#Huaqin modify for HQ-164615 by luocheng at 2021/11/01 start
-service mmc_ffu /vendor/bin/mmc_ffu do /vendor/bin/64GB_FW_HW_forFFU.BIN  /dev/block/mmcblk0 9b 00000d0c 0000060c
-	class main
-	user root
-	group system
-	oneshot
-#Huaqin modify for HQ-164615 by luocheng at 2021/11/01 end
-service mmc_ffu_hynix /vendor/bin/mmc_ffu_hynix do /vendor/bin/H9HP16AECMMDAR-KMM_P08.bin /dev/block/mmcblk0 90 38303030 35303030
-	class main
-	user root
-	group system
-	oneshot
 
 #Huaqin modify for K19A-335  by luocheng at 2021/07/19 start
 service mmc_ffu_micron /vendor/bin/mmc_ffu_micron do /vendor/bin/FFU_M5_11.BIN /dev/block/mmcblk0 13 00000005 00000004
@@ -161,10 +143,72 @@ on boot
     chown system system /sys/bus/platform/devices/fingerprint/fingerdown_wait
     chmod 0660 /sys/bus/platform/devices/fingerprint/fingerdown_wait
 
+    chmod 0660 /dev/nq-nci
+    chown nfc nfc /dev/nq-nci
+    chmod 0660 /dev/p73
+    chown nfc nfc /dev/p73
+
+on init
+    # Refer to http://source.android.com/devices/tech/storage/index.html
+    # It said, "Starting in Android 4.4, multiple external storage devices are surfaced to developers through
+    #           Context.getExternalFilesDirs(), Context.getExternalCacheDirs(), and Context.getObbDirs().
+    #           External storage devices surfaced through these APIs must be a semi-permanent part of the device (such as an SD card slot in a battery compartment).
+    #           Developers expect data stored in these locations to be available over long periods of time."
+    # Therefore, if the target doesn't support sd hot-plugging (Ex: the SD card slot in a battery compartment), we need to export SECONDARY_STORAGE in 'boot' section
+    #
+    # export SECONDARY_STORAGE /storage/sdcard1
+
+service fuse_usbotg /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/usbotg /storage/usbotg
+    class late_start
+    disabled
+
 service service_nv_protect /vendor/bin/misc_writer --nv_protect
     disabled
     oneshot
-    
+
+#K19A-T code for HQ-279784 by guoliwen at 2023/3/7 start
+service panel-info-sh /system/vendor/bin/sh /vendor/bin/init.panel_info.sh
+    class main
+    user root
+    oneshot
+    group root system
+    seclabel u:r:meta_tst:s0
+
+# start mmstat
+on property:sys.boot_completed=1
+    mkdir /sys/kernel/tracing/instances/mmstat 711
+    write /sys/kernel/tracing/instances/mmstat/tracing_on 0
+    write /sys/kernel/tracing/instances/mmstat/buffer_size_kb 16
+    write /sys/kernel/tracing/instances/mmstat/events/mmstat/enable 1
+    write /sys/kernel/tracing/instances/mmstat/tracing_on 1
+
+    start panel-info-sh
+#K19A-T code for HQ-279784 by guoliwen at 2023/3/7 end
+
 #K19A code for HQ-123615 by qianxiaoming at 20210511
 on property:vendor.service_nv_protect=start
     start service_nv_protect
+
+#K19A-T code for HQ-268758 add by tanrong at 2023/01/11 start
+#K19A-T code for HQ-277329 add by yangjinhao at 2023/01/17 start
+#Touch
+on property:sys.tp.grip_enable=0
+    write /proc/nvt_edge_reject_switch 1
+
+on property:sys.tp.grip_enable=90
+    write /proc/nvt_edge_reject_switch 2
+
+on property:sys.tp.grip_enable=270
+    write /proc/nvt_edge_reject_switch 3
+#K19A-T code for HQ-277329 add by yangjinhao at 2023/01/17 end
+
+#Touch2
+on property:sys.tp.grip_enable=0
+    write /sys/devices/platform/1100a000.spi0/spi_master/spi0/spi0.1/fts_edge_mode 0
+
+on property:sys.tp.grip_enable=90
+    write /sys/devices/platform/1100a000.spi0/spi_master/spi0/spi0.1/fts_edge_mode 1
+
+on property:sys.tp.grip_enable=270
+    write /sys/devices/platform/1100a000.spi0/spi_master/spi0/spi0.1/fts_edge_mode 2
+#K19A-T code for HQ-268758 add by tanrong at 2023/01/11 end
