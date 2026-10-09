@@ -115,7 +115,6 @@
             <kctl name="PGA R Mux" value="AIN0" />
         </path>
         <path name="builtin_Mic_Mic1" value="turnoff">
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
@@ -128,7 +127,6 @@
             <kctl name="PGA R Mux" value="AIN2" />
         </path>
         <path name="builtin_Mic_Mic1_Inverse" value="turnoff">
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
@@ -141,7 +139,6 @@
             <kctl name="PGA R Mux" value="AIN2" />
         </path>
         <path name="builtin_Mic_Mic2" value="turnoff">
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
@@ -154,7 +151,6 @@
             <kctl name="PGA R Mux" value="AIN0" />
         </path>
         <path name="builtin_Mic_Mic2_Inverse" value="turnoff">
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
@@ -167,7 +163,6 @@
             <kctl name="PGA R Mux" value="AIN0" />
         </path>
         <path name="builtin_Mic_SingleMic" value="turnoff">
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
@@ -180,7 +175,6 @@
             <kctl name="PGA R Mux" value="AIN2" />
         </path>
         <path name="builtin_Mic_DualMic" value="turnoff">
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
@@ -193,7 +187,6 @@
             <kctl name="PGA R Mux" value="AIN0" />
         </path>
         <path name="builtin_Mic_DualMic_Inverse" value="turnoff">
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
@@ -206,7 +199,6 @@
             <kctl name="PGA R Mux" value="AIN0" />
         </path>
         <path name="builtin_Mic_BackMic" value="turnoff">
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
@@ -219,7 +211,6 @@
             <kctl name="PGA R Mux" value="AIN2" />
         </path>
         <path name="builtin_Mic_BackMic_Inverse" value="turnoff">
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
@@ -232,7 +223,6 @@
             <kctl name="PGA R Mux" value="AIN1" />
         </path>
         <path name="headset_mic_input" value="turnoff">
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
@@ -245,7 +235,6 @@
             <kctl name="PGA R Mux" value="AIN0" />
         </path>
         <path name="builtin_Mic_Vow_Mic" value="turnoff">
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
@@ -258,7 +247,6 @@
             <kctl name="PGA R Mux" value="AIN2" />
         </path>
         <path name="builtin_Mic_Vow_Mic2" value="turnoff">
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
@@ -271,116 +259,15 @@
             <kctl name="PGA R Mux" value="AIN1" />
         </path>
         <path name="headset_vow_input" value="turnoff">
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
             <kctl name="PGA R Mux" value="None" />
         </path>
         <!--mic1 type setting-->
-        <path name="Mic1TypeVOWACCMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_ACC" />
-        </path>
-        <path name="Mic1TypeVOWDMICMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DMIC" />
-        </path>
-        <path name="Mic1TypeVOWDMICLPMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DMIC_LP" />
-        </path>
-        <path name="Mic1TypeVOWDCCMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DCC" />
-        </path>
-        <path name="Mic1TypeVOWDCCECMDIFFMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DCC_ECM_DIFF" />
-        </path>
-        <path name="Mic1TypeVOWDCCECMSINGLEMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DCC_ECM_SINGLE" />
-        </path>
-        <path name="Mic2TypeVOWACCMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_ACC" />
-        </path>
-        <path name="Mic2TypeVOWDMICMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DMIC" />
-        </path>
-        <path name="Mic2TypeVOWDMICLPMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DMIC_LP" />
-        </path>
-        <path name="Mic2TypeVOWDCCMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DCC" />
-        </path>
-        <path name="Mic2TypeVOWDCCECMDIFFMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DCC_ECM_DIFF" />
-        </path>
-        <path name="Mic2TypeVOWDCCECMSINGLEMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DCC_ECM_SINGLE" />
-        </path>
-        <path name="Mic3TypeVOWACCMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_ACC" />
-        </path>
-        <path name="Mic3TypeVOWDMICMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DMIC" />
-        </path>
-        <path name="Mic3TypeVOWDMICLPMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DMIC_LP" />
-        </path>
-        <path name="Mic3TypeVOWDCCMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DCC" />
-        </path>
-        <path name="Mic3TypeVOWDCCECMDIFFMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DCC_ECM_DIFF" />
-        </path>
-        <path name="Mic3TypeVOWDCCECMSINGLEMode" value="setting">
-            <kctl name="Mic Type Mux" value="VOW_DCC_ECM_SINGLE" />
-        </path>
-        <path name="Mic1TypeACCMode" value="setting">
-            <kctl name="Mic Type Mux" value="ACC" />
-        </path>
-        <path name="Mic1TypeDCCMode" value="setting">
-            <kctl name="Mic Type Mux" value="DCC" />
-        </path>
-        <path name="Mic1TypeDMICMode" value="setting">
+        <path name="MicTypeDMICMode" value="setting">
             <kctl name="MTKAIF_DMIC" value="On" />
-            <kctl name="Mic Type Mux" value="DMIC" />
         </path>
-        <path name="Mic1TypeDCCECMDIFFMode" value="setting">
-            <kctl name="Mic Type Mux" value="DCC_ECM_DIFF" />
-        </path>
-        <path name="Mic1TypeDCCECMSINGLEMode" value="setting">
-            <kctl name="Mic Type Mux" value="DCC_ECM_SINGLE" />
-        </path>
-        <path name="Mic2TypeACCMode" value="setting">
-            <kctl name="Mic Type Mux" value="ACC" />
-        </path>
-        <path name="Mic2TypeDCCMode" value="setting">
-            <kctl name="Mic Type Mux" value="DCC" />
-        </path>
-        <path name="Mic2TypeDMICMode" value="setting">
-            <kctl name="MTKAIF_DMIC" value="On" />
-            <kctl name="Mic Type Mux" value="DMIC" />
-        </path>
-        <path name="Mic2TypeDCCECMDIFFMode" value="setting">
-            <kctl name="Mic Type Mux" value="DCC_ECM_DIFF" />
-        </path>
-        <path name="Mic2TypeDCCECMSINGLEMode" value="setting">
-            <kctl name="Mic Type Mux" value="DCC_ECM_SINGLE" />
-        </path>
-        <path name="Mic3TypeACCMode" value="setting">
-            <kctl name="Mic Type Mux" value="ACC" />
-        </path>
-        <path name="Mic3TypeDCCMode" value="setting">
-            <kctl name="Mic Type Mux" value="DCC" />
-        </path>
-        <path name="Mic3TypeDMICMode" value="setting">
-            <kctl name="MTKAIF_DMIC" value="On" />
-            <kctl name="Mic Type Mux" value="DMIC" />
-        </path>
-        <path name="Mic3TypeDCCECMDIFFMode" value="setting">
-            <kctl name="Mic Type Mux" value="DCC_ECM_DIFF" />
-        </path>
-        <path name="Mic3TypeDCCECMSINGLEMode" value="setting">
-            <kctl name="Mic Type Mux" value="DCC_ECM_SINGLE" />
-        </path>
-
         <path name="sidetone_switch" value="turnon">
             <kctl name="Sidetone Filter Switch" value="1" />
         </path>
@@ -706,38 +593,26 @@
         <path name="MRG_TO_ADDA_I2S" value="turnoff">
         </path>
         <path name="MD1_TO_ADDA_DL" value="turnon">
-            <kctl name="PCM_2_PB_CH1 ADDA_UL_CH1" value="1" />
-            <kctl name="PCM_2_PB_CH2 ADDA_UL_CH2" value="1" />
             <kctl name="ADDA_DL_CH1 PCM_2_CAP_CH1" value="1" />
             <kctl name="ADDA_DL_CH2 PCM_2_CAP_CH1" value="1" />
         </path>
         <path name="MD1_TO_ADDA_DL" value="turnoff">
-            <kctl name="PCM_2_PB_CH1 ADDA_UL_CH1" value="0" />
-            <kctl name="PCM_2_PB_CH2 ADDA_UL_CH2" value="0" />
             <kctl name="ADDA_DL_CH1 PCM_2_CAP_CH1" value="0" />
             <kctl name="ADDA_DL_CH2 PCM_2_CAP_CH1" value="0" />
         </path>
         <path name="MD1_TO_I2S1" value="turnon">
-            <kctl name="PCM_2_PB_CH1 ADDA_UL_CH1" value="1" />
-            <kctl name="PCM_2_PB_CH2 ADDA_UL_CH2" value="1" />
             <kctl name="I2S1_CH1 PCM_2_CAP_CH1" value="1" />
             <kctl name="I2S1_CH2 PCM_2_CAP_CH1" value="1" />
         </path>
         <path name="MD1_TO_I2S1" value="turnoff">
-            <kctl name="PCM_2_PB_CH1 ADDA_UL_CH1" value="0" />
-            <kctl name="PCM_2_PB_CH2 ADDA_UL_CH2" value="0" />
             <kctl name="I2S1_CH1 PCM_2_CAP_CH1" value="0" />
             <kctl name="I2S1_CH2 PCM_2_CAP_CH1" value="0" />
         </path>
         <path name="MD1_TO_I2S3" value="turnon">
-            <kctl name="PCM_2_PB_CH1 ADDA_UL_CH1" value="1" />
-            <kctl name="PCM_2_PB_CH2 ADDA_UL_CH2" value="1" />
             <kctl name="I2S3_CH1 PCM_2_CAP_CH1" value="1" />
             <kctl name="I2S3_CH2 PCM_2_CAP_CH1" value="1" />
         </path>
         <path name="MD1_TO_I2S3" value="turnoff">
-            <kctl name="PCM_2_PB_CH1 ADDA_UL_CH1" value="0" />
-            <kctl name="PCM_2_PB_CH2 ADDA_UL_CH2" value="0" />
             <kctl name="I2S3_CH1 PCM_2_CAP_CH1" value="0" />
             <kctl name="I2S3_CH2 PCM_2_CAP_CH1" value="0" />
         </path>
@@ -831,7 +706,6 @@
             <kctl name="HPL Mux" value="Open" />
             <kctl name="HPR Mux" value="Open" />
             <kctl name="RCV Mux" value="Open" />
-            <kctl name="Mic Type Mux" value="Idle" />
             <kctl name="ADC L Mux" value="Idle" />
             <kctl name="ADC R Mux" value="Idle" />
             <kctl name="PGA L Mux" value="None" />
