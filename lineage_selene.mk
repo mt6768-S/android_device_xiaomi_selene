@@ -23,7 +23,7 @@ PRODUCT_MODEL := Redmi 10
 PRODUCT_GMS_CLIENTID_BASE := android-xiaomi
 
 PRODUCT_BUILD_PROP_OVERRIDES += \
-    PRIVATE_BUILD_DESC="selene-user 11 RP1A.200720.011 V12.5.20.0.RKUMIXM release-keys"
+    PRIVATE_BUILD_DESC="selene-user 12 TP1A.220624.014 V14.0.7.0.TKUMIXM release-keys"
 
 # Set BUILD_FINGERPRINT variable to be picked up by both system and vendor build.prop
-BUILD_FINGERPRINT :=  Redmi/selene/selene:11/RP1A.200720.011/V12.5.20.0.RKUMIXM:user/release-keys
+BUILD_FINGERPRINT :=  Redmi/selene/selene:12/TP1A.220624.014/V14.0.7.0.TKUMIXM:user/release-keys
