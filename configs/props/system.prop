@@ -1,0 +1,8 @@
+# Charger
+ro.charger.enable_suspend=true
+
+# FUSE passthrough
+persist.sys.fuse.passthrough.enable=true
+
+# Zygote
+zygote.critical_window.minute=10
