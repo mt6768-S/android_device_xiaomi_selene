@@ -511,8 +511,10 @@ vendor/firmware/BT_FW.cfg
 vendor/lib64/libbluetooth_mtk.so
 vendor/lib64/libbt-vendor.so
 
+vendor/lib64/vendor.mediatek.hardware.netdagent-V1-ndk.so
+
 # Bluetooth (Firmware) - from A145PXXU1AWA3
-vendor/firmware/soc1_0_ram_bt_1a_1_hdr.bin|9cd0d79cde76a59ddd8545b1621af1176c5f9605
+vendor/firmware/soc1_0_ram_bt_1a_1_hdr.bin
 
 # Camera
 vendor/bin/hw/camerahalserver
@@ -523,10 +525,6 @@ vendor/bin/libccu_gc02m1_macro_aac_mipi_raw.dm
 vendor/bin/libccu_gc02m1_macro_aac_mipi_raw.pm
 vendor/bin/libccu_gc02m1_macro_sy_mipi_raw.dm
 vendor/bin/libccu_gc02m1_macro_sy_mipi_raw.pm
-vendor/bin/libccu_imx355_aac_ultra_mipi_raw.dm
-vendor/bin/libccu_imx355_aac_ultra_mipi_raw.pm
-vendor/bin/libccu_imx355_sunny_ultra_mipi_raw.dm
-vendor/bin/libccu_imx355_sunny_ultra_mipi_raw.pm
 vendor/bin/libccu_ov02b1b_ofilm_mipi_raw.dm
 vendor/bin/libccu_ov02b1b_ofilm_mipi_raw.pm
 vendor/bin/libccu_ov50c40_ofilm_main_mipi_raw.dm
@@ -540,7 +538,7 @@ vendor/bin/libccu_ov8856_ofilm_front_mipi_raw.pm
 vendor/bin/libccu_s5kjn1_ofilm_main_mipi_raw.dm
 vendor/bin/libccu_s5kjn1_ofilm_main_mipi_raw.pm
 vendor/firmware/lib3a.ccu
--vendor/lib64/hw/android.hardware.camera.provider@2.6-impl-mediatek.so
+vendor/lib64/hw/android.hardware.camera.provider@2.6-impl-mediatek.so
 vendor/lib64/libalLDC.so
 vendor/lib64/gc02m1b_sunny_mipi_raw_india_IdxMgr.so
 vendor/lib64/gc02m1b_sunny_mipi_raw_india_tuning.so
@@ -880,7 +878,9 @@ vendor/lib64/libgralloc_metadata.so
 vendor/lib64/libgralloctypes_mtk.so
 vendor/lib64/libhdrvideo.so
 vendor/lib64/libion_mtk.so
+vendor/lib/libion_mtk.so
 vendor/lib64/libion_ulit.so
+vendor/lib/libion_ulit.so
 vendor/lib64/libladder.so
 vendor/lib64/libmml.so
 vendor/lib64/libpq_cust_base.so
@@ -956,7 +956,7 @@ vendor/firmware/nt36672c_tr_02_ts_mp.bin
 # DRM
 vendor/bin/hw/android.hardware.drm@1.4-service.widevine
 vendor/etc/init/android.hardware.drm@1.4-service.widevine.rc
--vendor/etc/vintf/manifest/manifest_android.hardware.drm@1.4-service.widevine.xml
+vendor/etc/vintf/manifest/manifest_android.hardware.drm@1.4-service.widevine.xml
 vendor/lib64/liboemcrypto.so
 vendor/lib64/libtlcWidevineModularDrm.so
 vendor/lib64/liburee_meta_drmkeyinstall.so
