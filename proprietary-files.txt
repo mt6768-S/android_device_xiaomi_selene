@@ -1170,8 +1170,6 @@ vendor/lib64/libtrm.so
 vendor/lib64/libverno.so
 vendor/lib64/libwpfa.so
 vendor/lib64/vendor.mediatek.hardware.clientapi@1.0.so
-vendor/lib64/vendor.mediatek.hardware.mtkradioex@2.0.so
-vendor/lib64/vendor.mediatek.hardware.mtkradioex@3.0.so
 
 # Radio (IMS)
 vendor/bin/hw/vtservice_hidl
