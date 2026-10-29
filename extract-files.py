@@ -65,7 +65,6 @@ namespace_imports = [
     'hardware/lineage/interfaces/power-libperfmgr',
     'hardware/mediatek',
     'hardware/mediatek/libmtkperf_client',
-    'hardware/mediatek/libaedv',
     'hardware/xiaomi',
 ]
 
