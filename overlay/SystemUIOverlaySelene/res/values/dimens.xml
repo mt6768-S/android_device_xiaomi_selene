@@ -20,23 +20,6 @@
 <resources>
 
     <!-- the padding on the top of the statusbar (usually 0) -->
-    <dimen name="status_bar_padding_top">24.0px</dimen>
-
-    <!-- Margin on the left side of the carrier text on Keyguard -->
-    <dimen name="keyguard_carrier_text_margin">25dp</dimen>
-    <!-- Margin on the right side of the system icon group on Keyguard. -->
-    <dimen name="system_icons_keyguard_padding_end">8dp</dimen>
-
-    <!-- Rounded corner content padding -->
-    <dimen name="rounded_corner_content_padding">14dp</dimen>
-
-    <!-- Location on the screen of the center of the physical power button. -->
-    <dimen name="physical_power_button_center_screen_location_y">890px</dimen>
-    <dimen name="physical_fingerprint_sensor_center_screen_location_y">890px</dimen>
-
-    <!-- Location on the screen of the center of the physical volume up/down buttons.
-         Cannon does not have separate volume buttons-->
-    <dimen name="physical_volume_up_button_center_screen_location_y">390px</dimen>
-    <dimen name="physical_volume_down_button_center_screen_location_y">590px</dimen>
+    <dimen name="status_bar_padding_top">33.0px</dimen>
 
 </resources>
