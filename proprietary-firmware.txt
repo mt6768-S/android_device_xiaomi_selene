@@ -2,7 +2,8 @@
 
 lk.img;AB
 md1img.img;AB
-preloader.img:preloader_raw.img;AB
+logo.img;AB
+preloader_emmc.img:preloader_raw.img;AB
 scp.img;AB
 spmfw.img;AB
 sspm.img;AB
