@@ -126,6 +126,13 @@ blob_fixups: blob_fixups_user_type = {
         .add_needed('liblog.so'),
     ('vendor/lib/libnvram.so', 'vendor/lib64/libnvram.so', 'vendor/lib64/libsysenv.so'): blob_fixup()
         .add_needed('libbase_shim.so'),
+    'vendor/lib64/libgf_hal.so': blob_fixup()
+        .binary_regex_replace(
+            b'\x00\x14\xa0\x83\x5f\xb8\xfd\x7b\x43\xa9\xff\x03\x01\x91\xc0\x03\x5f\xd6\xff\x83\x01\xd1\xfd\x7b\x05\xa9\xfd\x43\x01\x91',
+            b'\x00\x14\xa0\x83\x5f\xb8\xfd\x7b\x43\xa9\xff\x03\x01\x91\xc0\x03\x5f\xd6\x00\x00\xe0\xd2\xc0\x03\x5f\xd6\xfd\x43\x01\x91',
+        ),
+    'vendor/etc/vintf/manifest/manifest_media_c2_V1_2_default.xml': blob_fixup()
+        .regex_replace('1.1', '1.2'),
 }  # fmt: skip
 
 module = ExtractUtilsModule(
