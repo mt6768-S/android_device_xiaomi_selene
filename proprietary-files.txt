@@ -511,8 +511,6 @@ vendor/firmware/BT_FW.cfg
 vendor/lib64/libbluetooth_mtk.so
 vendor/lib64/libbt-vendor.so
 
-vendor/lib64/vendor.mediatek.hardware.netdagent-V1-ndk.so
-
 # Bluetooth (Firmware) - from A145PXXU1AWA3
 vendor/firmware/soc1_0_ram_bt_1a_1_hdr.bin
 
