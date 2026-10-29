@@ -212,7 +212,10 @@ TARGET_SUPPORTS_OMX_SERVICE := false
 
 PRODUCT_PACKAGES += \
     libavservices_minijail.vendor \
+    libcodec2_hidl@1.2.vendor \
+    libcodec2_soft_common.vendor \
     libion.vendor \
+    libsfplugin_ccodec_utils.vendor \
     libstagefright_softomx_plugin.vendor \
     libstagefright_foundation-v33
 
