@@ -76,10 +76,6 @@ blob_fixups: blob_fixups_user_type = {
        .clear_symbol_version('AHardwareBuffer_lock')
        .clear_symbol_version('AHardwareBuffer_release')
        .clear_symbol_version('AHardwareBuffer_unlock'),
-    'vendor/lib64/hw/vulkan.mt6765.so' : blob_fixup()
-        .clear_symbol_version('__aeabi_memcpy')
-        .clear_symbol_version('__aeabi_memset')
-        .clear_symbol_version('__gnu_Unwind_Find_exidx'),
     ('vendor/bin/hw/camerahalserver', 'vendor/lib64/libmtkcam_stdutils.so', 'vendor/lib64/hw/android.hardware.camera.provider@2.6-impl-mediatek.so', 'vendor/lib64/hw/vendor.mediatek.hardware.pq@2.13-impl.so'): blob_fixup()
         .replace_needed('libutils.so', 'libutils-v32.so'),
     'vendor/bin/hw/mtkfusionrild' : blob_fixup()
@@ -145,8 +141,6 @@ blob_fixups: blob_fixups_user_type = {
         .replace_needed('libsensorndkbridge.so', 'android.hardware.sensors@1.0-convert-shared.so'),
     ('vendor/bin/hw/android.hardware.gnss-service.mediatek', 'vendor/lib64/hw/android.hardware.gnss-impl-mediatek.so'): blob_fixup()
         .replace_needed('android.hardware.gnss-V1-ndk_platform.so', 'android.hardware.gnss-V1-ndk.so'),
-    'vendor/bin/hw/android.hardware.memtrack-service.mediatek' : blob_fixup()
-        .replace_needed('android.hardware.memtrack-V1-ndk_platform.so', 'android.hardware.memtrack-V1-ndk.so'),
     'vendor/lib/hw/audio.primary.mt6768.so' : blob_fixup()
         .add_needed('libstagefright_foundation-v33.so')
         .replace_needed('libalsautils.so', 'libalsautils-v31.so')
@@ -155,8 +149,6 @@ blob_fixups: blob_fixups_user_type = {
         .add_needed('libprocessgroup_shim.so'),
     'vendor/lib64/libgoodixhwfingerprint.so' : blob_fixup()
         .replace_needed('libvendor.goodix.hardware.biometrics.fingerprint@2.1.so', 'vendor.goodix.hardware.biometrics.fingerprint@2.1.so'),
-    'vendor/lib64/libvendor.goodix.hardware.biometrics.fingerprint@2.1.so' : blob_fixup()
-        .replace_needed('libhidlbase.so', 'libhidlbase-v32.so'),
     ('vendor/lib64/libSQLiteModule_VER_ALL.so', 'vendor/lib64/lib3a.flash.so', 'vendor/lib/libteei_daemon_vfs.so', 'vendor/lib64/libteei_daemon_vfs.so'): blob_fixup()
         .add_needed('liblog.so'),
     ('vendor/lib/libnvram.so', 'vendor/lib64/libnvram.so', 'vendor/lib64/libsysenv.so'): blob_fixup()
