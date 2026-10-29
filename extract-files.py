@@ -26,7 +26,9 @@ extract_utils.tools.DEFAULT_PATCHELF_VERSION = '0_17_2'
 namespace_imports = [
     'device/xiaomi/selene',
     'hardware/google/interfaces',
-    'hardware/google/pixel',
+    'hardware/google/pixel/pixelstats',
+    'hardware/google/pixel/power-libperfmgr',
+    'hardware/google/pixel/thermal',
     'hardware/lineage/interfaces/power-libperfmgr',
     'hardware/mediatek',
     'hardware/mediatek/libmtkperf_client',
