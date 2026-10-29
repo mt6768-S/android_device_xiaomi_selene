@@ -56,8 +56,6 @@ vendor/lib/libaudioprimarydevicehalifclient.so
 vendor/lib/libaurisysdemo.so
 vendor/lib/libbessound_hd_mtk_vendor.so
 vendor/lib/libblisrc32_vendor.so
-vendor/lib/libbwc.so
-vendor/lib/libladder.so
 vendor/lib/libmsbc_mtk.so
 vendor/lib/libmtklimiter_vendor.so
 vendor/lib/libmtkshifter_vendor.so
@@ -625,7 +623,6 @@ vendor/lib64/libalCFR.so
 vendor/lib64/libarcsoft_beautyshot.so
 vendor/lib64/libarcsoft_fbpre.so
 vendor/lib64/libarcsoft_supernight.so
-vendor/lib64/libbwc.so
 vendor/lib64/libc++_shared.so
 vendor/lib64/libcam.chdr.so
 vendor/lib64/libcam.feature_utils.so
@@ -1029,35 +1026,36 @@ vendor/etc/init/microtrust.bp_kmsetkey_ca.rc
 # Media
 vendor/bin/vpud
 vendor/etc/init/vpud.rc
+vendor/etc/mtk_platform_codecs_config.xml
 vendor/lib/AVCSecureVdecCA.so
-vendor/lib/libHEVCdec_sa.ca7.android.so;DISABLE_CHECKELF
 vendor/lib/VP9SecureVdecCA.so
-vendor/lib/libcodec2_mtk_c2store.so
-vendor/lib/libcodec2_soft_mtk_alacdec.so
-vendor/lib/libcodec2_soft_mtk_apedec.so
-vendor/lib/libcodec2_soft_mtk_imaadpcmdec.so
-vendor/lib/libcodec2_soft_mtk_mp3dec.so
-vendor/lib/libcodec2_soft_mtk_msadpcmdec.so
+vendor/lib/libHEVCdec_sa.ca7.android.so;DISABLE_CHECKELF
+vendor/lib/libbwc.so
 vendor/lib/libh264dec_customize.so
 vendor/lib/libh264dec_sa.ca7.so;DISABLE_CHECKELF
 vendor/lib/libh264dec_sd.ca7.so;DISABLE_CHECKELF
 vendor/lib/libh264dec_se.ca7.so;DISABLE_CHECKELF
+vendor/lib/libh264enc_sa.ca7.so;DISABLE_CHECKELF
 vendor/lib/libhevce_sb.ca7.android.so;DISABLE_CHECKELF
 vendor/lib/libmp4enc_sa.ca7.so;DISABLE_CHECKELF
+vendor/lib/libmp4enc_xa.ca7.so;DISABLE_CHECKELF
 vendor/lib/libthha.so;DISABLE_CHECKELF
-vendor/lib/libvcodec_oal.so
+vendor/lib/libvcodec_oal.so;DISABLE_CHECKELF
 vendor/lib/libvcodec_utility.so
 vendor/lib/libvcodecdrv.so
-vendor/lib/libvcodecdrv_header_stub.so
 vendor/lib/libvp8dec_sa.ca7.so;DISABLE_CHECKELF
 vendor/lib/libvp8enc_sa.ca7.so;DISABLE_CHECKELF
 vendor/lib/libvp9dec_sa.ca7.so;DISABLE_CHECKELF
 vendor/lib/libvpu5.so
 vendor/lib/libvpud_vcodec.so
-
-# Media (Configs)
-vendor/etc/mtk_omx_core.cfg
-vendor/etc/mtk_platform_codecs_config.xml
+vendor/lib64/AVCSecureVdecCA.so
+vendor/lib64/VP9SecureVdecCA.so
+vendor/lib64/libbwc.so
+vendor/lib64/libhevce_sb.ca7.android.so;DISABLE_CHECKELF
+vendor/lib64/libthha.so;DISABLE_CHECKELF
+vendor/lib64/libvcodec_oal.so
+vendor/lib64/libvcodecdrv_header_stub.so
+vendor/lib64/libvpu5.so
 
 # Media (Codec2)
 system/lib64/libstagefright_bufferqueue_helper.so:vendor/lib64/libstagefright_bufferqueue_helper-v31.so;FIX_SONAME
@@ -1086,11 +1084,6 @@ vendor/lib64/libcodec2_vpp_rs_plugin.so|1dd6c491e7f31e0fd3895c7b9b6ba5db88d98169
 vendor/lib64/libformatter.so:vendor/lib64/libformatter_mtk.so;FIX_SONAME|fbef29f4cdab3978ba7dfb99ab8ee324daf2e723|56b18e9968797b60f790a93f8841c8a974bbbae1
 vendor/lib64/libmp3dec_mtk.so|35d9864cc9435ce28a68874ea349d1efb1274547
 vendor/lib64/libsfplugin_ccodec_utils.so:vendor/lib64/libsfplugin_ccodec_utils-v31.so;FIX_SONAME|1a8b85f3d7829f73f83f4c9962317cbc6bff4507|5f2f91fc869337f19fa87df9ebfdd537df8d2d23
-
-# Media (OMX)
-vendor/lib/libMtkOmxAlacDec.so
-vendor/lib/libalacdec_mtk.so
-vendor/lib/libmp3dec_mtk.so
 
 # MMS
 vendor/bin/hw/vendor.mediatek.hardware.mms@1.6-service
@@ -1274,7 +1267,6 @@ vendor/lib/libteei_daemon_vfs.so
 vendor/lib64/libTEECommon.so
 vendor/lib64/libimsg_log.so
 vendor/lib64/libteei_daemon_vfs.so
-vendor/lib64/libthha.so;DISABLE_CHECKELF
 vendor/thh/ta/020b0000000000000000000000000000.ta
 vendor/thh/ta/020f0000000000000000000000000000.ta
 vendor/thh/ta/05120000000000000000000000000000.ta
