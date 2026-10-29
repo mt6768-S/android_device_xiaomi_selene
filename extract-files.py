@@ -5,6 +5,8 @@
 #
 
 from extract_utils.fixups_blob import (
+    BlobFixupCtx,
+    File,
     blob_fixup,
     blob_fixups_user_type,
 )
@@ -15,6 +17,12 @@ from extract_utils.fixups_lib import (
     lib_fixups_user_type,
 )
 
+from extract_utils.tools import (
+    llvm_objdump_path,
+)
+from extract_utils.utils import (
+    run_cmd,
+)
 from extract_utils.main import (
     ExtractUtils,
     ExtractUtilsModule,
@@ -22,6 +30,31 @@ from extract_utils.main import (
 
 import extract_utils.tools
 extract_utils.tools.DEFAULT_PATCHELF_VERSION = '0_17_2'
+
+def blob_fixup_graphic_buffer_size(
+    ctx: BlobFixupCtx,
+    file: File,
+    file_path: str,
+    *args,
+    **kwargs,
+):
+    for line in run_cmd(
+        [
+            llvm_objdump_path,
+            '--disassemble-all',
+            file_path,
+        ]
+    ).splitlines():
+        line = line.split(maxsplit=5)
+        if len(line) != 6:
+            continue
+        # The size of GraphicBuffer changed from 0x100 to 0xd30
+        offset, _, instruction, register, value, _ = line
+        if instruction == 'mov' and register[:-1] == 'w0' and value == '#0x100':
+            with open(file_path, 'rb+') as f:
+                f.seek(int(offset[:-1], 16))
+                f.write(b'\x00\xa6\x81\x52')  # AArch64 mov w0, #0xd30
+
 
 namespace_imports = [
     'device/xiaomi/selene',
@@ -115,7 +148,9 @@ blob_fixups: blob_fixups_user_type = {
     'vendor/bin/hw/android.hardware.memtrack-service.mediatek' : blob_fixup()
         .replace_needed('android.hardware.memtrack-V1-ndk_platform.so', 'android.hardware.memtrack-V1-ndk.so'),
     'vendor/lib/hw/audio.primary.mt6768.so' : blob_fixup()
-        .replace_needed('libalsautils.so', 'libalsautils-v31.so'),
+        .add_needed('libstagefright_foundation-v33.so')
+        .replace_needed('libalsautils.so', 'libalsautils-v31.so')
+        .replace_needed('libtinyxml2.so', 'libtinyxml2-v34.so'),
     'vendor/lib64/hw/hwcomposer.mt6768.so' : blob_fixup()
         .add_needed('libprocessgroup_shim.so'),
     'vendor/lib64/libgoodixhwfingerprint.so' : blob_fixup()
@@ -133,6 +168,12 @@ blob_fixups: blob_fixups_user_type = {
         ),
     'vendor/etc/vintf/manifest/manifest_media_c2_V1_2_default.xml': blob_fixup()
         .regex_replace('1.1', '1.2'),
+    'vendor/lib/librt_extamp_intf.so' : blob_fixup()
+        .replace_needed('libtinyxml2.so', 'libtinyxml2-v34.so'),
+    (
+        'vendor/lib64/libcam.hal3a.v3.so',
+    ): blob_fixup()
+        .call(blob_fixup_graphic_buffer_size),
 }  # fmt: skip
 
 module = ExtractUtilsModule(
