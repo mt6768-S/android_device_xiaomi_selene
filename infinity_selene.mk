@@ -12,8 +12,8 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, vendor/infinity/config/common_full_phone.mk)
 
 # Infinity-X Specific Flags
-INFINITY_BUILD_TYPE := UNOFFICIAL
-INFINITY_MAINTAINER := "sabrinium0"
+INFINITY_BUILD_TYPE := OFFICIAL
+INFINITY_MAINTAINER := "EmreDemirn"
 TARGET_BOOT_ANIMATION_RES := 1080
 WITH_GAPPS := true
 TARGET_SUPPORTS_BLUR := false
