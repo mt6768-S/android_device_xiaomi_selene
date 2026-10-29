@@ -1,6 +1,6 @@
 # Firmware - from selene-user 13 TP1A.220624.014 V14.0.7.0.TKUMIXM release-keys
 
-lk.img;AB
+lk.img;AB|616e2a251728c58e660b6502df6b2fae2f0c1d03
 md1img.img;AB
 logo.img;AB
 preloader_emmc.img:preloader_raw.img;AB
