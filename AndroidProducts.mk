@@ -5,4 +5,4 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/infinity_selene.mk
+    $(LOCAL_DIR)/lineage_selene.mk
